@@ -54,7 +54,29 @@ with left:
         "lat": lat + map_rng.normal(0, 0.7, 180),
         "lon": lon + map_rng.normal(0, 0.7, 180),
     })
-    st.map(points, latitude="lat", longitude="lon", zoom=6)
+    
+import folium
+from streamlit_folium import st_folium
+
+fire_map = folium.Map(
+    location=[lat, lon],
+    zoom_start=6,
+    tiles="OpenStreetMap"
+)
+
+for _, point in points.iterrows():
+    folium.CircleMarker(
+        location=[point["lat"], point["lon"]],
+        radius=3,
+        color="#ff5630",
+        fill=True,
+        fill_color="#ff5630",
+        fill_opacity=0.7,
+        weight=1
+    ).add_to(fire_map)
+
+st_folium(fire_map, height=440, use_container_width=True)
+
     st.caption("Illustrative points; not actual fire detections. Region selection is preset in v0.1.")
 with right:
     st.subheader("Burning Activity Calendar")
