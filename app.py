@@ -2,6 +2,8 @@ import numpy as np
 import pandas as pd
 import plotly.express as px
 import streamlit as st
+import folium
+from streamlit_folium import st_folium
 
 st.set_page_config(page_title="Rychfire | Fire Activity Calendar", page_icon="🔥", layout="wide")
 st.title("🔥 Rychfire")
@@ -30,10 +32,10 @@ for year in range(2012, 2026):
         factor = {"MODIS": 1, "VIIRS": 1.6, "Combined (not harmonized)": 2.6}[sensor]
         count = int(rng.poisson(max(2, 40 * season * factor * (1 + 0.02 * (year - 2012)))))
         rows.append({"year": year, "month": month, "detections": count})
+
 df = pd.DataFrame(rows)
 df = df[df.year.between(*year_range)].copy()
 df["date"] = pd.to_datetime(dict(year=df.year, month=df.month, day=1))
-
 monthly_baseline = df.groupby("month")["detections"].median()
 latest = df.sort_values("date").iloc[-1]
 base = float(monthly_baseline.loc[int(latest.month)])
@@ -54,46 +56,54 @@ with left:
         "lat": lat + map_rng.normal(0, 0.7, 180),
         "lon": lon + map_rng.normal(0, 0.7, 180),
     })
-    
-import folium
-from streamlit_folium import st_folium
 
-fire_map = folium.Map(
-    location=[lat, lon],
-    zoom_start=6,
-    tiles="OpenStreetMap"
-)
+    fire_map = folium.Map(
+        location=[lat, lon],
+        zoom_start=6,
+        tiles="OpenStreetMap",
+    )
+    for _, point in points.iterrows():
+        folium.CircleMarker(
+            location=[point["lat"], point["lon"]],
+            radius=3,
+            color="#ff5630",
+            fill=True,
+            fill_color="#ff5630",
+            fill_opacity=0.7,
+            weight=1,
+        ).add_to(fire_map)
 
-for _, point in points.iterrows():
-    folium.CircleMarker(
-        location=[point["lat"], point["lon"]],
-        radius=3,
-        color="#ff5630",
-        fill=True,
-        fill_color="#ff5630",
-        fill_opacity=0.7,
-        weight=1
-    ).add_to(fire_map)
-
-st_folium(fire_map, height=440, use_container_width=True)
-
+    st_folium(fire_map, height=440, use_container_width=True)
     st.caption("Illustrative points; not actual fire detections. Region selection is preset in v0.1.")
+
 with right:
     st.subheader("Burning Activity Calendar")
     grid = df.pivot(index="year", columns="month", values="detections")
     grid = grid.reindex(columns=range(1, 13))
-    fig = px.imshow(grid, labels=dict(x="Month", y="Year", color="Detections"),
-                    x=["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
-                    aspect="auto", color_continuous_scale="YlOrRd")
+    fig = px.imshow(
+        grid,
+        labels=dict(x="Month", y="Year", color="Detections"),
+        x=["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
+        aspect="auto",
+        color_continuous_scale="YlOrRd",
+    )
     fig.update_layout(height=410, margin=dict(l=10, r=10, t=15, b=10))
     st.plotly_chart(fig, use_container_width=True)
 
 st.subheader("Historical Activity")
-trend = px.line(df, x="date", y="detections", markers=True,
-                labels={"date": "Month", "detections": "Simulated hotspot detections"})
+trend = px.line(
+    df,
+    x="date",
+    y="detections",
+    markers=True,
+    labels={"date": "Month", "detections": "Simulated hotspot detections"},
+)
 trend.update_layout(height=300, margin=dict(l=10, r=10, t=15, b=10))
 st.plotly_chart(trend, use_container_width=True)
-
-st.download_button("⬇️ Download demo monthly data (CSV)", data=df.to_csv(index=False).encode("utf-8"),
-                   file_name="rychfire_demo_monthly.csv", mime="text/csv")
+st.download_button(
+    "⬇️ Download demo monthly data (CSV)",
+    data=df.to_csv(index=False).encode("utf-8"),
+    file_name="rychfire_demo_monthly.csv",
+    mime="text/csv",
+)
 st.caption("Roadmap: real NASA FIRMS ingestion → spatial AOI selection → validated MODIS/VIIRS harmonization → anomaly confidence indicators.")
