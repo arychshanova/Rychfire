@@ -1,0 +1,45 @@
+{
+  "source_sha256": "447713ef898fc003def3acd489d71c443a874a181efdb5969d1c0dbf03e3039c",
+  "source_rows": 55533,
+  "monthly_sum": 55533,
+  "date_min": "2006-03-21",
+  "date_max": "2025-11-21",
+  "instruments": {
+    "MODIS": 55533
+  },
+  "satellites": {
+    "Aqua": 27982,
+    "Terra": 27551
+  },
+  "versions": {
+    "6.03": 52860,
+    "61.03": 2673
+  },
+  "annual_counts": {
+    "2006": 5421,
+    "2007": 2737,
+    "2008": 10763,
+    "2009": 3077,
+    "2010": 6815,
+    "2011": 1638,
+    "2012": 4591,
+    "2013": 711,
+    "2014": 1676,
+    "2015": 1067,
+    "2016": 1113,
+    "2017": 1951,
+    "2018": 1624,
+    "2019": 2180,
+    "2020": 697,
+    "2021": 4038,
+    "2022": 2761,
+    "2023": 1977,
+    "2024": 290,
+    "2025": 406
+  },
+  "syntax_and_analytical_checks": "passed",
+  "source_bytes_preserved": true,
+  "spatial_filter": false,
+  "added_observations": 0,
+  "full_streamlit_plotly_folium_runtime": "not tested: packages absent; installation declined"
+}
