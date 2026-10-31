@@ -1,4 +1,4 @@
-"""Rychfire v0.2: real MODIS detections; run with streamlit run app.py."""
+"""Rychfire v0.2.1: real MODIS detections; run with streamlit run app.py."""
 from pathlib import Path
 import hashlib
 
@@ -97,8 +97,8 @@ def main():
     import plotly.express as px
     import plotly.graph_objects as go
 
-    st.set_page_config(page_title='Rychfire v0.2 | MODIS', page_icon='🔥', layout='wide')
-    st.title('🔥 Rychfire v0.2')
+    st.set_page_config(page_title='Rychfire v0.2.1 | MODIS', page_icon='🔥', layout='wide')
+    st.title('🔥 Rychfire v0.2.1')
     st.caption(AOI)
     st.warning('Обнаружение ≠ отдельный пожар. Только MODIS. 2025 год неполный. '
                'AOI не является административной границей и не подтверждает охват всей Костанайской области.')

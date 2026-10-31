@@ -41,5 +41,8 @@
   "source_bytes_preserved": true,
   "spatial_filter": false,
   "added_observations": 0,
-  "full_streamlit_plotly_folium_runtime": "not tested: packages absent; installation declined"
+  "full_streamlit_plotly_folium_runtime": "not tested: packages absent; installation declined",
+  "release": "0.2.1",
+  "dependency_fix": "numpy 2.2.6 -> 2.3.3 for Python 3.14 support",
+  "dependency_install_and_cloud_restart": "not tested"
 }
